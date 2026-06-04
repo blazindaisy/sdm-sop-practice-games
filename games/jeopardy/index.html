@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOP Jeopardy — SDM &amp; SOP Practice Games</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #012A3A;
+  min-height: 100vh;
+  color: #fff;
+}
+
+/* ── Page header ─────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.home-link {
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.home-link:hover { color: #fff; }
+
+.page-header h1 {
+  color: #F4A600;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  flex: 1;
+  text-align: center;
+}
+
+.header-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.6);
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.header-btn:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+/* ── Main layout ─────────────────────────────── */
+.game-layout {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  align-items: flex-start;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ── Board ───────────────────────────────────── */
+.board-wrap { flex: 1; min-width: 0; }
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.cat-header {
+  background: #065A82;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px 6px;
+  border-radius: 6px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tile {
+  background: #065A82;
+  color: #F4A600;
+  font-weight: 700;
+  font-size: 22px;
+  text-align: center;
+  padding: 14px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.tile:hover:not(:disabled) { background: #023E5C; }
+.tile:disabled { opacity: 0.15; cursor: default; }
+
+/* ── Scoreboard ──────────────────────────────── */
+.scoreboard {
+  width: 230px;
+  flex-shrink: 0;
+  background: rgba(6,90,130,0.18);
+  border: 1px solid rgba(6,90,130,0.45);
+  border-radius: 8px;
+  padding: 1rem;
+  position: sticky;
+  top: 1.25rem;
+}
+
+.score-title {
+  color: #F4A600;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(244,166,0,0.25);
+}
+
+#score-list {
+  max-height: 440px;
+  overflow-y: auto;
+  margin-bottom: 0.75rem;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px;
+}
+.score-row:last-child { border-bottom: none; }
+
+.score-rank {
+  color: rgba(255,255,255,0.25);
+  font-size: 11px;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.score-name {
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  padding: 0 6px;
+}
+
+.score-pts {
+  color: #F4A600;
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.score-empty {
+  color: rgba(255,255,255,0.3);
+  font-size: 13px;
+  text-align: center;
+  padding: 1.25rem 0;
+  font-style: italic;
+}
+
+.btn-new-game {
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.4);
+  padding: 7px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+.btn-new-game:hover {
+  border-color: rgba(220,80,80,0.5);
+  color: rgba(255,140,140,0.85);
+}
+
+/* ── Question overlay ────────────────────────── */
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #012A3A;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  z-index: 100;
+}
+#overlay.visible { display: flex; }
+
+#ov-label {
+  color: #F4A600;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2rem;
+}
+
+#ov-question {
+  color: #fff;
+  font-size: 22px;
+  text-align: center;
+  line-height: 1.65;
+  max-width: 680px;
+  margin-bottom: 2rem;
+  white-space: pre-line;
+}
+
+#ov-answer {
+  display: none;
+  color: #F4A600;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 680px;
+  border-top: 1px solid rgba(244,166,0,0.3);
+  padding-top: 1.5rem;
+  margin-bottom: 2rem;
+  white-space: pre-line;
+}
+
+/* Award form — shown inside overlay after reveal */
+#award-form {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#award-form .award-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+#award-name {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 15px;
+  width: 190px;
+  font-family: inherit;
+}
+#award-name::placeholder { color: rgba(255,255,255,0.3); }
+#award-name:focus { outline: none; border-color: rgba(244,166,0,0.6); }
+
+#award-pts {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #F4A600;
+  padding: 8px 10px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 700;
+  width: 80px;
+  text-align: center;
+  font-family: inherit;
+}
+#award-pts:focus { outline: none; border-color: rgba(244,166,0,0.6); }
+
+#btn-add-score {
+  background: #F4A600;
+  border: none;
+  color: #012A3A;
+  padding: 9px 20px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+#btn-add-score:hover { background: #e09500; }
+
+#btn-cancel-award {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.5);
+  padding: 9px 14px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+#btn-cancel-award:hover { background: rgba(255,255,255,0.07); color: #fff; }
+
+/* Bottom button row in overlay */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 10px 26px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.btn:hover { background: rgba(255,255,255,0.08); }
+.btn.gold { border-color: #F4A600; color: #F4A600; }
+.btn.gold:hover { background: rgba(244,166,0,0.1); }
+
+/* ── Edit overlay ────────────────────────────── */
+#edit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #012A3A;
+  z-index: 200;
+  overflow-y: auto;
+  padding: 0 1.5rem 3rem;
+}
+#edit-overlay.visible { display: block; }
+
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 1.25rem 0 1rem;
+  position: sticky;
+  top: 0;
+  background: #012A3A;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 1.5rem;
+}
+
+.edit-header h2 {
+  color: #F4A600;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.edit-header-note {
+  color: rgba(255,255,255,0.35);
+  font-size: 12px;
+  flex: 1;
+  padding: 0 1rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#edit-form {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.edit-category {
+  background: rgba(6,90,130,0.2);
+  border: 1px solid rgba(6,90,130,0.4);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.edit-cat-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.75rem;
+}
+
+.edit-cat-name-row label {
+  color: #F4A600;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.edit-cat-name-input {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(244,166,0,0.35);
+  color: #F4A600;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  flex: 1;
+  font-family: inherit;
+}
+.edit-cat-name-input:focus { outline: none; border-color: #F4A600; }
+
+.edit-q-block {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.edit-pts-label {
+  color: #F4A600;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.edit-field-label {
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+  margin-top: 7px;
+}
+
+.edit-textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 68px;
+  line-height: 1.5;
+}
+.edit-textarea:focus { outline: none; border-color: rgba(244,166,0,0.5); }
+</style>
+</head>
+<body>
+
+<!-- Page header -->
+<header class="page-header">
+  <a href="../../index.html" class="home-link">&#8592; All Games</a>
+  <h1>SOP Wrap-Up Jeopardy</h1>
+  <button id="btn-edit-mode" class="header-btn">&#9998; Edit Questions</button>
+</header>
+
+<!-- Board + Scoreboard -->
+<div class="game-layout">
+  <div class="board-wrap">
+    <div id="board"></div>
+  </div>
+
+  <aside class="scoreboard">
+    <h2 class="score-title">Scoreboard</h2>
+    <div id="score-list"></div>
+    <button id="btn-new-game" class="btn-new-game">&#8635; New Game</button>
+  </aside>
+</div>
+
+<!-- Question overlay -->
+<div id="overlay" role="dialog" aria-modal="true">
+  <div id="ov-label"></div>
+  <div id="ov-question"></div>
+  <div id="ov-answer"></div>
+
+  <div id="award-form">
+    <span class="award-label">Award to:</span>
+    <input type="text" id="award-name" placeholder="Player name" list="name-suggestions" autocomplete="off">
+    <datalist id="name-suggestions"></datalist>
+    <input type="number" id="award-pts" min="0" step="100">
+    <button id="btn-add-score">+ Add</button>
+    <button id="btn-cancel-award">Cancel</button>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn gold" id="btn-reveal">Reveal Answer</button>
+    <button class="btn gold" id="btn-award" style="display:none">Award Points</button>
+    <button class="btn" id="btn-close-q">Close &#8212; No Award</button>
+  </div>
+</div>
+
+<!-- Edit overlay -->
+<div id="edit-overlay" role="dialog" aria-modal="true">
+  <div class="edit-header">
+    <h2>&#9998; Edit Questions</h2>
+    <span class="edit-header-note">Changes are saved to your browser and persist when you reload.</span>
+    <div class="edit-actions">
+      <button id="btn-save-edits" class="btn gold">Save Changes</button>
+      <button id="btn-reset-qs" class="btn">Reset to Defaults</button>
+      <button id="btn-close-edit" class="btn">Cancel</button>
+    </div>
+  </div>
+  <div id="edit-form"></div>
+</div>
+
+<script>
+// ── Default questions ──────────────────────────────────────────────────────
+const DEFAULT_DATA = [
+  {
+    name: "Say What?",
+    questions: [
+      { pts: 100, q: "This type of question invites families to imagine a future where the problem is solved.", a: "A miracle question / future-focused question" },
+      { pts: 200, q: "This is the term for the specific, observable behaviors a parent must demonstrate for the child to be safe — not services to complete, but changes to make.", a: "Safety goals" },
+      { pts: 300, q: "In SOP, this phrase captures the idea that a safety plan only works if real people are committed to showing up.", a: '"No network, no plan"' },
+      { pts: 400, q: "This mapping tool captures the three-way relationship between the child, the family, and the agency — including what each party worries about, what's working, and what needs to change.", a: "Three-column mapping" }
+    ]
+  },
+  {
+    name: "Danger Zone",
+    questions: [
+      { pts: 100, q: "True or false: A harm statement describes what has already happened to a child.", a: "TRUE" },
+      { pts: 200, q: "What is the key difference between a harm statement and a danger statement?", a: "Harm describes past incidents; danger describes the specific future threat to the child if nothing changes." },
+      { pts: 300, q: "A worker writes: \"Mom has a substance abuse problem that puts her child at risk.\" Is this a valid danger statement? Why or why not?", a: "No — it's not specific enough. It doesn't name the child, describe the specific dangerous behavior, or identify what could happen to this child." },
+      { pts: 400, q: "Which is a valid danger statement?\n\nA) \"Dad's anger is dangerous to the children.\"\n\nB) \"When dad loses his temper he has grabbed and shaken the baby without warning, and the baby could be seriously injured or killed.\"", a: "B — it names who, what behavior, which child, and the specific harm that could result." }
+    ]
+  },
+  {
+    name: "Who's in the Room?",
+    questions: [
+      { pts: 100, q: "In SOP, what is the purpose of a network?", a: "To create lasting safety that doesn't depend solely on the agency — people who will show up after the case closes." },
+      { pts: 200, q: "This mapping tool uses circles to show a family's connections — who is close, who is distant, and who might be a safety resource.", a: "CAP mapping / ecomap" },
+      { pts: 300, q: "True or false: A network contact only counts if they are willing to be part of the formal safety plan.", a: "FALSE — network members can play informal support roles without being named in the plan." },
+      { pts: 400, q: "A worker identifies three network members but the family says they don't trust any of them. What should the worker do next, according to SOP principles?", a: "Explore with the family why trust is low and whether it can be rebuilt — the family's voice in who is in their network is essential." }
+    ]
+  },
+  {
+    name: "Kids Say",
+    questions: [
+      { pts: 100, q: "What is the name of the tool that uses three houses to gather a child's perspective on worries, good things, and wishes?", a: "Three Houses" },
+      { pts: 200, q: "Why does SOP emphasize including children's voices in safety planning?", a: "Children have direct knowledge of what happens at home; their voice makes plans more accurate and more likely to work." },
+      { pts: 300, q: "The Three Houses tool is generally appropriate for what age range?", a: "It can be adapted across a wide range of ages — the worker adapts language and format to the child's developmental level; there is no strict cutoff." },
+      { pts: 400, q: "A worker skips Three Houses because the child is only 4 and \"won't understand.\" What SOP principle does this conflict with?", a: "Children of all ages have a voice — tools and language should be adapted, not abandoned." }
+    ]
+  },
+  {
+    name: "From the Field",
+    questions: [
+      { pts: 100, q: "\"What would your family look like if things were going well?\" — What kind of question is this?", a: "A solution-focused / future-focused question (Module 1)" },
+      { pts: 200, q: "A safety plan relies entirely on the caseworker checking in weekly. What is the problem with this plan?", a: "It depends on the agency, not a natural network — it won't hold after case closure." },
+      { pts: 300, q: "During visits, the child returns consistently dysregulated and upset. In SOP terms, what should the worker explore?", a: "What is happening during visits; whether the visitation plan supports the child's needs and the relationship; whether safety concerns are present." },
+      { pts: 400, q: "\"Complete parenting classes\" is listed as a case plan goal. Why is this not behaviorally-based, and what would make it better?", a: "Service completion isn't behavior change. Better goal: \"Dad will use calm redirection instead of physical discipline when children don't follow instructions.\"" }
+    ]
+  }
+];
+
+// ── localStorage keys ──────────────────────────────────────────────────────
+const LS_QUESTIONS = 'sopjeopardy_questions';
+const LS_SCORES    = 'sopjeopardy_scores';
+const LS_USED      = 'sopjeopardy_used';
+
+// ── App state ──────────────────────────────────────────────────────────────
+let data        = loadQuestions();
+let scores      = loadScores();    // { "Name": totalPoints }
+let used        = loadUsed();      // Set of "ci-pts" strings
+let currentCat  = null;
+let currentPts  = null;
+
+// ── Persistence helpers ────────────────────────────────────────────────────
+function loadQuestions() {
+  try {
+    const s = localStorage.getItem(LS_QUESTIONS);
+    return s ? JSON.parse(s) : deepCopy(DEFAULT_DATA);
+  } catch(e) { return deepCopy(DEFAULT_DATA); }
+}
+
+function loadScores() {
+  try {
+    const s = localStorage.getItem(LS_SCORES);
+    return s ? JSON.parse(s) : {};
+  } catch(e) { return {}; }
+}
+
+function loadUsed() {
+  try {
+    const s = localStorage.getItem(LS_USED);
+    return new Set(s ? JSON.parse(s) : []);
+  } catch(e) { return new Set(); }
+}
+
+function saveQuestions() { localStorage.setItem(LS_QUESTIONS, JSON.stringify(data)); }
+function saveScores()    { localStorage.setItem(LS_SCORES,    JSON.stringify(scores)); }
+function saveUsed()      { localStorage.setItem(LS_USED,      JSON.stringify([...used])); }
+
+function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+// ── Utility ────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── Board ──────────────────────────────────────────────────────────────────
+function buildBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  // Category headers
+  data.forEach(cat => {
+    const hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.textContent = cat.name;
+    board.appendChild(hdr);
+  });
+
+  // Tiles — row by row (each point value across all categories)
+  [100, 200, 300, 400].forEach(pts => {
+    data.forEach((cat, ci) => {
+      const key = ci + '-' + pts;
+      const btn = document.createElement('button');
+      btn.className = 'tile';
+      btn.textContent = '$' + pts;
+      btn.disabled = used.has(key);
+      btn.addEventListener('click', () => openQuestion(ci, pts));
+      board.appendChild(btn);
+    });
+  });
+}
+
+// ── Question overlay ───────────────────────────────────────────────────────
+function openQuestion(ci, pts) {
+  currentCat = ci;
+  currentPts = pts;
+
+  const q = data[ci].questions.find(x => x.pts === pts);
+  document.getElementById('ov-label').textContent    = data[ci].name + ' · $' + pts;
+  document.getElementById('ov-question').textContent = q.q;
+  document.getElementById('ov-answer').textContent   = q.a;
+
+  // Reset overlay to initial state
+  document.getElementById('ov-answer').style.display   = 'none';
+  document.getElementById('award-form').style.display  = 'none';
+  document.getElementById('btn-reveal').style.display  = 'inline-block';
+  document.getElementById('btn-award').style.display   = 'none';
+
+  document.getElementById('overlay').classList.add('visible');
+}
+
+// Reveal answer
+document.getElementById('btn-reveal').addEventListener('click', () => {
+  document.getElementById('ov-answer').style.display  = 'block';
+  document.getElementById('btn-reveal').style.display = 'none';
+  document.getElementById('btn-award').style.display  = 'inline-block';
+});
+
+// Show award form
+document.getElementById('btn-award').addEventListener('click', () => {
+  document.getElementById('btn-award').style.display  = 'none';
+  document.getElementById('award-form').style.display = 'flex';
+
+  // Pre-fill point value; clear name
+  document.getElementById('award-pts').value  = currentPts;
+  document.getElementById('award-name').value = '';
+
+  // Populate autocomplete with existing scorer names
+  const dl = document.getElementById('name-suggestions');
+  dl.innerHTML = '';
+  Object.keys(scores).sort().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    dl.appendChild(opt);
+  });
+
+  document.getElementById('award-name').focus();
+});
+
+// Cancel award form — go back
+document.getElementById('btn-cancel-award').addEventListener('click', () => {
+  document.getElementById('award-form').style.display = 'none';
+  document.getElementById('btn-award').style.display  = 'inline-block';
+});
+
+// Submit award — Enter key in either field
+document.getElementById('award-name').addEventListener('keydown', e => { if (e.key === 'Enter') submitAward(); });
+document.getElementById('award-pts').addEventListener('keydown',  e => { if (e.key === 'Enter') submitAward(); });
+document.getElementById('btn-add-score').addEventListener('click', submitAward);
+
+function submitAward() {
+  const name = document.getElementById('award-name').value.trim();
+  const pts  = parseInt(document.getElementById('award-pts').value, 10);
+  if (!name) { document.getElementById('award-name').focus(); return; }
+  if (isNaN(pts) || pts < 0) return;
+
+  scores[name] = (scores[name] || 0) + pts;
+  saveScores();
+  renderScoreboard();
+  closeOverlay();
+}
+
+// Close without awarding
+document.getElementById('btn-close-q').addEventListener('click', closeOverlay);
+
+function closeOverlay() {
+  // Mark tile as used regardless of whether points were awarded
+  if (currentCat !== null && currentPts !== null) {
+    used.add(currentCat + '-' + currentPts);
+    saveUsed();
+  }
+  document.getElementById('overlay').classList.remove('visible');
+  buildBoard();
+  currentCat = null;
+  currentPts = null;
+}
+
+// ── Scoreboard ─────────────────────────────────────────────────────────────
+function renderScoreboard() {
+  const list    = document.getElementById('score-list');
+  const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+
+  if (entries.length === 0) {
+    list.innerHTML = '<div class="score-empty">No scores yet</div>';
+    return;
+  }
+
+  list.innerHTML = entries.map(([name, pts], i) => `
+    <div class="score-row">
+      <span class="score-rank">${i + 1}.</span>
+      <span class="score-name">${esc(name)}</span>
+      <span class="score-pts">$${pts}</span>
+    </div>
+  `).join('');
+}
+
+// New Game — clears scores and resets the board
+document.getElementById('btn-new-game').addEventListener('click', () => {
+  if (confirm('Start a new game? This will clear all scores and reset the board.')) {
+    scores = {};
+    used   = new Set();
+    saveScores();
+    saveUsed();
+    renderScoreboard();
+    buildBoard();
+  }
+});
+
+// ── Edit overlay ───────────────────────────────────────────────────────────
+document.getElementById('btn-edit-mode').addEventListener('click', openEditor);
+document.getElementById('btn-close-edit').addEventListener('click', closeEditor);
+
+document.getElementById('btn-save-edits').addEventListener('click', () => {
+  const newData = [];
+  document.querySelectorAll('.edit-category').forEach((block, ci) => {
+    const catName = block.querySelector('.edit-cat-name-input').value.trim()
+                    || DEFAULT_DATA[ci].name;
+    const questions = [];
+    block.querySelectorAll('.edit-q-block').forEach((qb, qi) => {
+      questions.push({
+        pts: DEFAULT_DATA[ci].questions[qi].pts,
+        q:   qb.querySelector('.edit-q-textarea').value.trim(),
+        a:   qb.querySelector('.edit-a-textarea').value.trim()
+      });
+    });
+    newData.push({ name: catName, questions });
+  });
+
+  data = newData;
+  saveQuestions();
+  buildBoard();
+  closeEditor();
+});
+
+document.getElementById('btn-reset-qs').addEventListener('click', () => {
+  if (confirm('Reset all questions to the original defaults? Your edits will be lost.')) {
+    data = deepCopy(DEFAULT_DATA);
+    saveQuestions();
+    buildBoard();
+    closeEditor();
+  }
+});
+
+function openEditor() {
+  renderEditor();
+  document.getElementById('edit-overlay').classList.add('visible');
+}
+
+function closeEditor() {
+  document.getElementById('edit-overlay').classList.remove('visible');
+}
+
+function renderEditor() {
+  document.getElementById('edit-form').innerHTML = data.map((cat, ci) => `
+    <div class="edit-category">
+      <div class="edit-cat-name-row">
+        <label for="cat-name-${ci}">Category name</label>
+        <input id="cat-name-${ci}" type="text" class="edit-cat-name-input" value="${esc(cat.name)}">
+      </div>
+      ${cat.questions.map((q, qi) => `
+        <div class="edit-q-block">
+          <div class="edit-pts-label">$${q.pts}</div>
+          <div class="edit-field-label">Question</div>
+          <textarea class="edit-textarea edit-q-textarea">${esc(q.q)}</textarea>
+          <div class="edit-field-label">Answer</div>
+          <textarea class="edit-textarea edit-a-textarea">${esc(q.a)}</textarea>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+buildBoard();
+renderScoreboard();
+</script>
+</body>
+</html>
