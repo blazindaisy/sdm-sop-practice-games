@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who Wants to be Safety Organized? — SDM &amp; SOP Practice Games</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0D1117;
+  --bg2:       #161B22;
+  --bg3:       #1C2333;
+  --gold:      #C9A84C;
+  --gold-dim:  rgba(201,168,76,0.25);
+  --gold-glow: rgba(201,168,76,0.12);
+  --text:      #E6EDF3;
+  --text-dim:  rgba(230,237,243,0.45);
+  --green:     #238636;
+  --green-bg:  #0D2818;
+  --red:       #DA3633;
+  --red-bg:    #2D0F0F;
+  --blue-btn:  #1C2D4A;
+  --blue-sel:  #163356;
+  --checkpoint:#7D5A00;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Page header ─────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(0,0,0,0.35);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.home-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.home-link:hover { color: var(--text); }
+
+.page-header h1 {
+  color: var(--gold);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  flex: 1;
+  text-align: center;
+}
+
+.header-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-dim);
+  padding: 6px 13px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+.header-btn:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
+
+/* ── Start screen ────────────────────────────── */
+#start-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.start-card {
+  background: var(--bg2);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 14px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+}
+
+.start-card h2 {
+  color: var(--gold);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.start-card p {
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.start-btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-primary {
+  background: var(--gold);
+  border: none;
+  color: #0D1117;
+  padding: 12px 28px;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+}
+.btn-primary:hover { background: #B8922E; }
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-dim);
+  padding: 11px 28px;
+  border-radius: 7px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
+
+/* ── Game screen ─────────────────────────────── */
+#game-screen {
+  display: none;
+  flex: 1;
+  min-height: 0;
+}
+
+.game-layout {
+  display: flex;
+  height: 100%;
+  min-height: calc(100vh - 49px);
+}
+
+/* ── Prize ladder ────────────────────────────── */
+.prize-ladder {
+  width: 180px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.25);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem 0;
+  overflow-y: auto;
+}
+
+.ladder-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.ladder-row.checkpoint {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.ladder-row.checkpoint::before {
+  content: '★';
+  font-size: 9px;
+  color: var(--gold);
+  flex-shrink: 0;
+  width: 12px;
+}
+
+.ladder-row:not(.checkpoint)::before {
+  content: '';
+  width: 12px;
+  flex-shrink: 0;
+}
+
+.ladder-row.current {
+  background: rgba(201,168,76,0.12);
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.ladder-row.current .ladder-val {
+  color: var(--gold);
+}
+
+.ladder-row.passed {
+  color: rgba(230,237,243,0.2);
+  text-decoration: line-through;
+}
+
+.ladder-val {
+  flex: 1;
+  text-align: right;
+}
+
+.ladder-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  min-width: 14px;
+  text-align: center;
+}
+
+/* ── Main game area ──────────────────────────── */
+.game-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 2.5rem;
+  gap: 2rem;
+  min-width: 0;
+}
+
+/* ── Lifelines ───────────────────────────────── */
+.lifelines {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lifeline-btn {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, border-color 0.15s, opacity 0.2s;
+}
+.lifeline-btn:hover:not(:disabled) {
+  background: var(--bg3);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.lifeline-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* ── Question area ───────────────────────────── */
+.question-wrap {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.question-num-badge {
+  background: var(--gold-dim);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--gold-dim);
+}
+
+#question-text {
+  font-size: 1.25rem;
+  line-height: 1.65;
+  text-align: center;
+  color: var(--text);
+  min-height: 60px;
+  white-space: pre-line;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.answer-btn {
+  background: var(--blue-btn);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text);
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+  min-height: 56px;
+  line-height: 1.4;
+}
+.answer-btn:hover:not(:disabled):not(.eliminated) {
+  background: var(--blue-sel);
+  border-color: rgba(201,168,76,0.4);
+}
+.answer-btn:disabled { cursor: default; }
+.answer-btn.eliminated {
+  opacity: 0.12;
+  cursor: default;
+  pointer-events: none;
+}
+.answer-btn.selected {
+  background: var(--blue-sel);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.answer-btn.selected .answer-label { color: var(--gold); }
+.answer-btn.correct {
+  background: var(--green-bg);
+  border-color: var(--green);
+  color: #3FB950;
+}
+.answer-btn.correct .answer-label { color: #3FB950; }
+.answer-btn.wrong {
+  background: var(--red-bg);
+  border-color: var(--red);
+  color: #F85149;
+}
+.answer-btn.wrong .answer-label { color: #F85149; }
+
+.answer-label {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--gold);
+  flex-shrink: 0;
+  min-width: 18px;
+}
+
+/* ── Walk away button ────────────────────────── */
+.walk-away-row {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-walk-away {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(230,237,243,0.3);
+  padding: 7px 20px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+}
+.btn-walk-away:hover {
+  border-color: rgba(218,54,51,0.5);
+  color: rgba(248,81,73,0.8);
+}
+
+/* ── Modals ──────────────────────────────────── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.modal-backdrop.visible { display: flex; }
+
+.modal-box {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal-box h3 {
+  color: var(--gold);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+}
+
+.modal-box p {
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.modal-box .modal-amount {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.modal-btn-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text);
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.modal-btn:hover { background: rgba(255,255,255,0.07); }
+.modal-btn.gold {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0D1117;
+  font-weight: 700;
+}
+.modal-btn.gold:hover { background: #B8922E; border-color: #B8922E; }
+
+/* ── Audience chart ──────────────────────────── */
+.audience-chart {
+  margin: 1rem 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.audience-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.audience-letter {
+  font-weight: 700;
+  color: var(--gold);
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.audience-bar-wrap {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  height: 22px;
+  overflow: hidden;
+}
+
+.audience-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #1C3A6E, #2D5AA0);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.audience-pct {
+  color: var(--text-dim);
+  width: 36px;
+  text-align: right;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* ── End screen ──────────────────────────────── */
+#end-screen {
+  display: none;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.end-card {
+  background: var(--bg2);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 14px;
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+  width: 100%;
+}
+
+.end-card .end-headline {
+  color: var(--gold);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.end-card .end-subtext {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+.end-card .end-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 1.75rem;
+  display: block;
+}
+
+/* ── Edit overlay ────────────────────────────── */
+#edit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 300;
+  overflow-y: auto;
+  padding: 0 1.5rem 3rem;
+}
+#edit-overlay.visible { display: block; }
+
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 1.25rem 0 1rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 1.5rem;
+}
+
+.edit-header h2 {
+  color: var(--gold);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.edit-header-note {
+  color: var(--text-dim);
+  font-size: 12px;
+  flex: 1;
+  padding: 0 1rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#edit-form {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.edit-q-block {
+  background: rgba(28,45,74,0.25);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.edit-q-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.85rem;
+}
+
+.edit-q-num {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.edit-q-val {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.edit-checkpoint-badge {
+  font-size: 10px;
+  color: var(--gold);
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.edit-field-label {
+  color: var(--text-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+
+.edit-textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+.edit-textarea:focus { outline: none; border-color: rgba(201,168,76,0.45); }
+
+.edit-input {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.edit-input:focus { outline: none; border-color: rgba(201,168,76,0.45); }
+
+.edit-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.edit-option-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.edit-option-letter {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 13px;
+  padding-top: 8px;
+  min-width: 14px;
+  flex-shrink: 0;
+}
+
+.edit-correct-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-correct-row label {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.edit-correct-select {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--gold);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 700;
+}
+.edit-correct-select:focus { outline: none; border-color: rgba(201,168,76,0.45); }
+
+/* ── Mobile ──────────────────────────────────── */
+@media (max-width: 680px) {
+  .prize-ladder { display: none; }
+  .game-main { padding: 1.25rem 1rem; gap: 1.25rem; }
+  #question-text { font-size: 1.05rem; }
+  .answers-grid { grid-template-columns: 1fr; }
+  .page-header h1 { font-size: 0.85rem; }
+  .header-btn { font-size: 11px; padding: 5px 9px; }
+  .edit-header { flex-direction: column; align-items: flex-start; }
+  .edit-actions { flex-wrap: wrap; }
+  .edit-options-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Page header -->
+<header class="page-header">
+  <a href="../../index.html" class="home-link">&#8592; All Games</a>
+  <h1>Who Wants to be Safety Organized?</h1>
+  <button id="btn-edit" class="header-btn">&#9998; Edit Questions</button>
+</header>
+
+<!-- Start screen -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Who Wants to be Safety Organized?</h2>
+    <p>15 questions. 3 lifelines. Answer correctly to climb the prize ladder — or walk away while you still can.</p>
+    <div class="start-btn-row">
+      <button id="btn-new-game" class="btn-primary">New Game</button>
+      <button id="btn-resume" class="btn-secondary" style="display:none">Resume Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game screen -->
+<div id="game-screen">
+  <div class="game-layout">
+
+    <!-- Prize ladder -->
+    <aside class="prize-ladder" id="prize-ladder"></aside>
+
+    <!-- Main area -->
+    <main class="game-main">
+
+      <!-- Lifelines -->
+      <div class="lifelines">
+        <button class="lifeline-btn" id="ll-fifty">50/50</button>
+        <button class="lifeline-btn" id="ll-phone">&#128222; Phone a Friend</button>
+        <button class="lifeline-btn" id="ll-audience">&#128101; Ask the Audience</button>
+      </div>
+
+      <!-- Question -->
+      <div class="question-wrap">
+        <div class="question-num-badge" id="question-badge">Question 1</div>
+        <div id="question-text"></div>
+        <div class="answers-grid" id="answers-grid">
+          <button class="answer-btn" data-idx="0"><span class="answer-label">A</span><span class="answer-text"></span></button>
+          <button class="answer-btn" data-idx="1"><span class="answer-label">B</span><span class="answer-text"></span></button>
+          <button class="answer-btn" data-idx="2"><span class="answer-label">C</span><span class="answer-text"></span></button>
+          <button class="answer-btn" data-idx="3"><span class="answer-label">D</span><span class="answer-text"></span></button>
+        </div>
+      </div>
+
+      <!-- Walk away -->
+      <div class="walk-away-row">
+        <button class="btn-walk-away" id="btn-walk-away">Walk Away</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- End screen -->
+<div id="end-screen">
+  <div class="end-card" id="end-card">
+    <div class="end-headline" id="end-headline"></div>
+    <div class="end-subtext" id="end-subtext"></div>
+    <span class="end-amount" id="end-amount"></span>
+    <button class="btn-primary" id="btn-play-again">Play Again</button>
+  </div>
+</div>
+
+<!-- Modal: Final Answer? -->
+<div class="modal-backdrop" id="modal-final-answer">
+  <div class="modal-box">
+    <h3>Final Answer?</h3>
+    <p id="final-answer-text"></p>
+    <div class="modal-btn-row">
+      <button class="modal-btn" id="btn-final-cancel">Go Back</button>
+      <button class="modal-btn gold" id="btn-final-confirm">Final Answer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Walk Away Confirm -->
+<div class="modal-backdrop" id="modal-walkaway">
+  <div class="modal-box">
+    <h3>Walk Away?</h3>
+    <p>Are you sure you want to walk away?</p>
+    <span class="modal-amount" id="walkaway-amount"></span>
+    <div class="modal-btn-row">
+      <button class="modal-btn" id="btn-walkaway-cancel">Keep Playing</button>
+      <button class="modal-btn gold" id="btn-walkaway-confirm">Walk Away</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Phone a Friend -->
+<div class="modal-backdrop" id="modal-phone">
+  <div class="modal-box">
+    <h3>&#128222; Phone a Friend</h3>
+    <p>Pause here and have the participant consult with a friend in the room. Once they've discussed, dismiss this and have them make their selection.</p>
+    <div class="modal-btn-row">
+      <button class="modal-btn gold" id="btn-phone-close">Done — Back to Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ask the Audience -->
+<div class="modal-backdrop" id="modal-audience">
+  <div class="modal-box">
+    <h3>&#128101; Ask the Audience</h3>
+    <p style="margin-bottom:0.75rem">The audience has voted:</p>
+    <div class="audience-chart" id="audience-chart"></div>
+    <div class="modal-btn-row">
+      <button class="modal-btn gold" id="btn-audience-close">Back to Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Correct Answer -->
+<div class="modal-backdrop" id="modal-correct">
+  <div class="modal-box">
+    <h3>&#10003; Correct!</h3>
+    <p id="correct-msg"></p>
+    <div class="modal-btn-row">
+      <button class="modal-btn gold" id="btn-correct-next">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Wrong Answer -->
+<div class="modal-backdrop" id="modal-wrong">
+  <div class="modal-box">
+    <h3 style="color:#F85149">&#10007; Incorrect</h3>
+    <p id="wrong-msg"></p>
+    <p style="margin-top:0.5rem;font-size:13px;color:var(--text-dim)">The correct answer was:</p>
+    <p id="wrong-correct-answer" style="margin-top:0.4rem;font-size:1.05rem;font-weight:600;color:#3FB950;margin-bottom:1.25rem"></p>
+    <div class="modal-btn-row">
+      <button class="modal-btn gold" id="btn-wrong-continue">See Result</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit overlay -->
+<div id="edit-overlay" role="dialog" aria-modal="true">
+  <div class="edit-header">
+    <h2>&#9998; Edit Questions</h2>
+    <span class="edit-header-note">Changes are saved to your browser and persist when you reload.</span>
+    <div class="edit-actions">
+      <button id="btn-save-edits" class="modal-btn gold">Save Changes</button>
+      <button id="btn-reset-qs" class="modal-btn">Reset to Defaults</button>
+      <button id="btn-close-edit" class="modal-btn">Cancel</button>
+    </div>
+  </div>
+  <div id="edit-form"></div>
+</div>
+
+<script>
+// ── Prize ladder data ──────────────────────────────────────────────────────
+const PRIZES = [
+  { val: 100,      checkpoint: false },
+  { val: 250,      checkpoint: false },
+  { val: 500,      checkpoint: false },
+  { val: 1000,     checkpoint: true  },
+  { val: 2500,     checkpoint: false },
+  { val: 5000,     checkpoint: false },
+  { val: 10000,    checkpoint: false },
+  { val: 25000,    checkpoint: true  },
+  { val: 50000,    checkpoint: false },
+  { val: 75000,    checkpoint: false },
+  { val: 100000,   checkpoint: false },
+  { val: 250000,   checkpoint: true  },
+  { val: 500000,   checkpoint: false },
+  { val: 750000,   checkpoint: false },
+  { val: 1000000,  checkpoint: false },
+];
+
+const LABELS = ['A','B','C','D'];
+
+// ── Default questions ──────────────────────────────────────────────────────
+const DEFAULT_QUESTIONS = [
+  {
+    q: "What does the acronym \"SDM\" stand for in child welfare?",
+    options: ["Structured Decision Making", "Social Data Management", "Standard Documentation Model", "Supervised Dependency Mapping"],
+    correct: 0
+  },
+  {
+    q: "In Safety Organized Practice, a \"danger statement\" describes what type of threat?",
+    options: ["Past harm that has already occurred to the child", "Environmental hazards present in the home", "Potential future harm from caregiver behavior or inaction", "A child's educational or developmental risk"],
+    correct: 2
+  },
+  {
+    q: "The Three Houses tool asks children about their worries, their wishes, and what else?",
+    options: ["Their daily schedule", "Where they feel safe", "Their friendships at school", "Their feelings about removal"],
+    correct: 1
+  },
+  {
+    q: "Which of the following best describes the purpose of the Signs of Safety framework?",
+    options: ["To document the history of child abuse allegations in a family", "To assign risk scores that determine removal decisions", "To organize practice around worries, strengths, and next steps", "To train caseworkers in trauma-focused interviewing"],
+    correct: 2
+  },
+  {
+    q: "Which of the following is a mandatory characteristic of a safety network member?",
+    options: ["They must be a licensed professional or mandated reporter", "They must live in the same household as the child", "They must have known the family for at least one year", "They must understand the danger and be willing to hold caregivers accountable"],
+    correct: 3
+  },
+  {
+    q: "Which SDM tool is used to determine whether a child can safely remain in the home during an investigation?",
+    options: ["Risk Assessment", "Family Strengths Assessment", "Safety Assessment", "Reunification Assessment"],
+    correct: 2
+  },
+  {
+    q: "In SOP, \"scaling questions\" are primarily used to measure which three things?",
+    options: ["Severity of harm, frequency of abuse, and impact on the child", "Caregiver cooperation, visitation compliance, and case plan completion", "Willingness, confidence, and capacity", "Family stability, housing security, and support network size"],
+    correct: 2
+  },
+  {
+    q: "A danger statement in SOP is typically formulated using three components. Which set correctly identifies all three?",
+    options: [
+      "Who is worried, what harm has occurred, and the child's current wishes",
+      "Who is worried, the potential caregiver behavior or inaction, and the potential impact to the child",
+      "The safety threat number, the family's history, and the case plan goal",
+      "The referral source, the caregiver's diagnosis, and the child's age"
+    ],
+    correct: 1
+  },
+  {
+    q: "Which statement about the SDM Risk Assessment is most accurate?",
+    options: [
+      "It determines whether a child is in immediate danger during an investigation",
+      "It replaces the need for a safety plan when risk is rated low",
+      "It guides decisions about service intensity and duration when combined with the safety decision",
+      "It must be completed before the Safety Assessment in every case"
+    ],
+    correct: 2
+  },
+  {
+    q: "In SOP, \"orienting the network\" refers to which activity?",
+    options: [
+      "Teaching network members to complete SDM tools alongside the caseworker",
+      "Recruiting new community members to expand the family's support system",
+      "Ensuring network members understand the danger, the safety goal, and their specific role",
+      "Providing network members with copies of the formal case plan documents"
+    ],
+    correct: 2
+  },
+  {
+    q: "The SDM Reunification Assessment is designed to examine which of the following?",
+    options: [
+      "The child's readiness to return home based on trauma symptom reduction",
+      "Behavioral change in the caregiver over time and progress on the case plan",
+      "The foster family's capacity to support the reunification process",
+      "The number of supervised visitation sessions completed since removal"
+    ],
+    correct: 1
+  },
+  {
+    q: "A worker begins services with a family that has no prior history of harm but clear danger indicators exist. Which SOP documentation is appropriate?",
+    options: [
+      "Both a harm statement and a danger statement — both are always required",
+      "A harm statement only — because the child is not currently safe",
+      "A danger statement only — because no actual harm has occurred yet",
+      "Neither — SOP documentation tools only apply after a substantiated finding"
+    ],
+    correct: 2
+  },
+  {
+    q: "Safety Threat #1 in SDM has a subtype that applies specifically to infants. What two conditions must BOTH be present for this subtype to apply?",
+    options: [
+      "The infant must be premature AND the caregiver must have a documented substance use disorder",
+      "The caregiver must have a prior CPS history AND the infant must have unmet medical needs",
+      "The infant must be born affected by substances AND factors must exist that create imminent danger",
+      "The infant must have been exposed to domestic violence AND be under six months of age"
+    ],
+    correct: 2
+  },
+  {
+    q: "In the Circles of Safety and Support tool, which group of people does the innermost circle represent?",
+    options: [
+      "Professionals and mandated reporters currently involved with the family",
+      "People who know nothing about the concerns but care about the child",
+      "Network members who have formally agreed to be named in the safety plan",
+      "People who know a lot about the concerns and are closest to the family"
+    ],
+    correct: 3
+  },
+  {
+    q: "A worker uses a scaling question and the caregiver responds with a 4. Which follow-up is MOST consistent with solution-focused principles?",
+    options: [
+      "\"What would it take to move from a 4 to a 5?\" — exploring incremental next steps",
+      "\"What makes you say 4 rather than a lower number?\" — uncovering exceptions and existing strengths",
+      "\"A 4 tells me there's still a lot of work to do — what are your main barriers?\" — problem-focused",
+      "\"Let's look at what's bringing that score down — what concerns you most?\" — deficit-focused"
+    ],
+    correct: 1
+  }
+];
+
+// ── localStorage keys ──────────────────────────────────────────────────────
+const LS_QUESTIONS = 'millionaire_questions';
+const LS_STATE     = 'millionaire_state';
+
+// ── App state ──────────────────────────────────────────────────────────────
+let questions = loadQuestions();
+let gameState = null; // set when a game is active
+
+// ── Persistence ────────────────────────────────────────────────────────────
+function loadQuestions() {
+  try {
+    const s = localStorage.getItem(LS_QUESTIONS);
+    return s ? JSON.parse(s) : deepCopy(DEFAULT_QUESTIONS);
+  } catch(e) { return deepCopy(DEFAULT_QUESTIONS); }
+}
+
+function loadState() {
+  try {
+    const s = localStorage.getItem(LS_STATE);
+    return s ? JSON.parse(s) : null;
+  } catch(e) { return null; }
+}
+
+function saveState() {
+  if (gameState) localStorage.setItem(LS_STATE, JSON.stringify(gameState));
+}
+
+function clearState() {
+  localStorage.removeItem(LS_STATE);
+  gameState = null;
+}
+
+function saveQuestions() {
+  localStorage.setItem(LS_QUESTIONS, JSON.stringify(questions));
+}
+
+function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
+
+// ── Utility ────────────────────────────────────────────────────────────────
+function fmt(n) {
+  return '$' + n.toLocaleString('en-US');
+}
+
+function checkpointFor(qIndex) {
+  // Returns the guaranteed amount if they fail at qIndex
+  const checkpoints = [3, 7, 11]; // 0-based indices of checkpoint questions
+  const vals        = [1000, 25000, 250000];
+  for (let i = checkpoints.length - 1; i >= 0; i--) {
+    if (qIndex > checkpoints[i]) return vals[i];
+  }
+  return 0;
+}
+
+function currentGuaranteed() {
+  return checkpointFor(gameState.questionIndex);
+}
+
+// ── Screen management ──────────────────────────────────────────────────────
+function showScreen(id) {
+  document.getElementById('start-screen').style.display  = 'none';
+  document.getElementById('game-screen').style.display   = 'none';
+  document.getElementById('end-screen').style.display    = 'none';
+  if (id === 'start')  { document.getElementById('start-screen').style.display = 'flex'; }
+  if (id === 'game')   { document.getElementById('game-screen').style.display  = 'flex'; }
+  if (id === 'end')    {
+    document.getElementById('end-screen').style.display = 'flex';
+  }
+}
+
+function showModal(id) { document.getElementById(id).classList.add('visible'); }
+function hideModal(id) { document.getElementById(id).classList.remove('visible'); }
+function hideAllModals() {
+  document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('visible'));
+}
+
+// ── Prize ladder render ────────────────────────────────────────────────────
+function renderLadder() {
+  const ladder = document.getElementById('prize-ladder');
+  ladder.innerHTML = '';
+
+  // Display highest prize at top
+  for (let i = PRIZES.length - 1; i >= 0; i--) {
+    const p   = PRIZES[i];
+    const row = document.createElement('div');
+    row.className = 'ladder-row' +
+      (p.checkpoint                          ? ' checkpoint' : '') +
+      (gameState && i === gameState.questionIndex ? ' current'    : '') +
+      (gameState && i < gameState.questionIndex   ? ' passed'     : '');
+
+    const numEl = document.createElement('span');
+    numEl.className = 'ladder-label';
+    numEl.textContent = i + 1;
+
+    const valEl = document.createElement('span');
+    valEl.className = 'ladder-val';
+    valEl.textContent = fmt(p.val);
+
+    row.appendChild(numEl);
+    row.appendChild(valEl);
+    ladder.appendChild(row);
+  }
+}
+
+// ── Question render ────────────────────────────────────────────────────────
+function renderQuestion() {
+  const qi = gameState.questionIndex;
+  const q  = questions[qi];
+
+  document.getElementById('question-badge').textContent =
+    'Question ' + (qi + 1) + ' — ' + fmt(PRIZES[qi].val);
+  document.getElementById('question-text').textContent = q.q;
+
+  const btns = document.querySelectorAll('.answer-btn');
+  btns.forEach((btn, idx) => {
+    btn.className = 'answer-btn';
+    btn.disabled  = false;
+    const eliminated = gameState.eliminated && gameState.eliminated.includes(idx);
+    if (eliminated) btn.classList.add('eliminated');
+    btn.querySelector('.answer-text').textContent = q.options[idx];
+  });
+
+  // Lifelines
+  document.getElementById('ll-fifty').disabled    = gameState.lifelines.fifty;
+  document.getElementById('ll-phone').disabled    = gameState.lifelines.phone;
+  document.getElementById('ll-audience').disabled = gameState.lifelines.audience;
+
+  renderLadder();
+}
+
+// ── Game start / resume ────────────────────────────────────────────────────
+function initStartScreen() {
+  const saved = loadState();
+  const resumeBtn = document.getElementById('btn-resume');
+  if (saved && saved.phase === 'playing') {
+    resumeBtn.style.display = 'block';
+    resumeBtn.textContent   = 'Resume Game (Q' + (saved.questionIndex + 1) + ')';
+  } else {
+    resumeBtn.style.display = 'none';
+  }
+  showScreen('start');
+}
+
+function startNewGame() {
+  gameState = {
+    phase: 'playing',
+    questionIndex: 0,
+    lifelines: { fifty: false, phone: false, audience: false },
+    eliminated: []
+  };
+  saveState();
+  showScreen('game');
+  renderQuestion();
+}
+
+function resumeGame() {
+  gameState = loadState();
+  showScreen('game');
+  renderQuestion();
+}
+
+document.getElementById('btn-new-game').addEventListener('click', () => {
+  const saved = loadState();
+  if (saved && saved.phase === 'playing') {
+    if (!confirm('Start a new game? Your current game in progress will be lost.')) return;
+  }
+  startNewGame();
+});
+
+document.getElementById('btn-resume').addEventListener('click', resumeGame);
+document.getElementById('btn-play-again').addEventListener('click', () => {
+  clearState();
+  initStartScreen();
+});
+
+// ── Answer selection ───────────────────────────────────────────────────────
+let pendingAnswerIdx = null;
+
+document.getElementById('answers-grid').addEventListener('click', e => {
+  const btn = e.target.closest('.answer-btn');
+  if (!btn || btn.disabled || btn.classList.contains('eliminated')) return;
+  if (gameState.phase !== 'playing') return;
+
+  pendingAnswerIdx = parseInt(btn.dataset.idx, 10);
+
+  // Highlight selected
+  document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  // Show final answer modal
+  const q = questions[gameState.questionIndex];
+  document.getElementById('final-answer-text').textContent =
+    LABELS[pendingAnswerIdx] + ': ' + q.options[pendingAnswerIdx];
+  showModal('modal-final-answer');
+});
+
+document.getElementById('btn-final-cancel').addEventListener('click', () => {
+  hideModal('modal-final-answer');
+  document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+  pendingAnswerIdx = null;
+});
+
+document.getElementById('btn-final-confirm').addEventListener('click', () => {
+  hideModal('modal-final-answer');
+  lockInAnswer(pendingAnswerIdx);
+});
+
+function lockInAnswer(idx) {
+  const qi      = gameState.questionIndex;
+  const q       = questions[qi];
+  const correct = q.correct;
+  const btns    = document.querySelectorAll('.answer-btn');
+
+  // Disable all buttons
+  btns.forEach(b => { b.disabled = true; b.classList.remove('selected'); });
+
+  if (idx === correct) {
+    btns[idx].classList.add('correct');
+    const isLast = qi === PRIZES.length - 1;
+    document.getElementById('correct-msg').textContent = isLast
+      ? 'You answered all 15 questions correctly!'
+      : 'Well done! You\'ve won ' + fmt(PRIZES[qi].val) + '.';
+    showModal('modal-correct');
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[correct].classList.add('correct');
+    const guaranteed = checkpointFor(qi);
+    document.getElementById('wrong-msg').textContent =
+      'You walk away with ' + fmt(guaranteed) + '.';
+    document.getElementById('wrong-correct-answer').textContent =
+      LABELS[correct] + ': ' + q.options[correct];
+    showModal('modal-wrong');
+  }
+}
+
+// ── Correct: continue ──────────────────────────────────────────────────────
+document.getElementById('btn-correct-next').addEventListener('click', () => {
+  hideModal('modal-correct');
+  const qi = gameState.questionIndex;
+  if (qi === PRIZES.length - 1) {
+    // Won!
+    endGame('won', PRIZES[qi].val);
+  } else {
+    gameState.questionIndex++;
+    gameState.eliminated = [];
+    saveState();
+    renderQuestion();
+  }
+});
+
+// ── Wrong: see result ──────────────────────────────────────────────────────
+document.getElementById('btn-wrong-continue').addEventListener('click', () => {
+  hideModal('modal-wrong');
+  const guaranteed = checkpointFor(gameState.questionIndex);
+  endGame('wrong', guaranteed);
+});
+
+// ── Walk away ──────────────────────────────────────────────────────────────
+document.getElementById('btn-walk-away').addEventListener('click', () => {
+  const qi         = gameState.questionIndex;
+  const walkAmount = qi === 0 ? 0 : PRIZES[qi - 1].val;
+  document.getElementById('walkaway-amount').textContent =
+    walkAmount > 0 ? fmt(walkAmount) : '$0';
+  showModal('modal-walkaway');
+});
+
+document.getElementById('btn-walkaway-cancel').addEventListener('click', () => {
+  hideModal('modal-walkaway');
+});
+
+document.getElementById('btn-walkaway-confirm').addEventListener('click', () => {
+  hideModal('modal-walkaway');
+  const qi         = gameState.questionIndex;
+  const walkAmount = qi === 0 ? 0 : PRIZES[qi - 1].val;
+  endGame('walkaway', walkAmount);
+});
+
+// ── End game ───────────────────────────────────────────────────────────────
+function endGame(reason, amount) {
+  gameState.phase = 'ended';
+  clearState();
+
+  const headline = document.getElementById('end-headline');
+  const subtext  = document.getElementById('end-subtext');
+  const amountEl = document.getElementById('end-amount');
+
+  if (reason === 'won') {
+    headline.textContent = 'You\'re a Millionaire!';
+    subtext.textContent  = 'You answered all 15 questions correctly. Outstanding!';
+  } else if (reason === 'walkaway') {
+    headline.textContent = amount > 0 ? 'You Walked Away' : 'You Left Empty-Handed';
+    subtext.textContent  = amount > 0
+      ? 'A smart choice. You locked in your winnings.'
+      : 'You walked away before answering any questions correctly.';
+  } else {
+    headline.textContent = 'Better Luck Next Time';
+    subtext.textContent  = 'You answered incorrectly, but that\'s how we learn. Your checkpoint amount is below.';
+  }
+
+  amountEl.textContent = fmt(amount);
+  showScreen('end');
+}
+
+// ── Lifelines ──────────────────────────────────────────────────────────────
+document.getElementById('ll-fifty').addEventListener('click', () => {
+  if (gameState.lifelines.fifty) return;
+  gameState.lifelines.fifty = true;
+  saveState();
+
+  const q       = questions[gameState.questionIndex];
+  const correct = q.correct;
+  const wrongs  = [0, 1, 2, 3].filter(i => i !== correct);
+  // Pick 2 random wrong answers to eliminate
+  shuffle(wrongs);
+  const toEliminate = wrongs.slice(0, 2);
+  gameState.eliminated = toEliminate;
+  saveState();
+
+  document.querySelectorAll('.answer-btn').forEach((btn, idx) => {
+    if (toEliminate.includes(idx)) btn.classList.add('eliminated');
+  });
+  document.getElementById('ll-fifty').disabled = true;
+});
+
+document.getElementById('ll-phone').addEventListener('click', () => {
+  if (gameState.lifelines.phone) return;
+  gameState.lifelines.phone = true;
+  saveState();
+  document.getElementById('ll-phone').disabled = true;
+  showModal('modal-phone');
+});
+
+document.getElementById('btn-phone-close').addEventListener('click', () => {
+  hideModal('modal-phone');
+});
+
+document.getElementById('ll-audience').addEventListener('click', () => {
+  if (gameState.lifelines.audience) return;
+  gameState.lifelines.audience = true;
+  saveState();
+  document.getElementById('ll-audience').disabled = true;
+
+  const q    = questions[gameState.questionIndex];
+  const pcts = generateAudienceVotes(q.correct, gameState.eliminated || []);
+  renderAudienceChart(pcts, q.options);
+  showModal('modal-audience');
+});
+
+document.getElementById('btn-audience-close').addEventListener('click', () => {
+  hideModal('modal-audience');
+});
+
+function generateAudienceVotes(correctIdx, eliminated) {
+  // Assign each wrong answer (not eliminated) a random vote share 5-25%
+  // Correct answer always gets the most votes (at least +1 over highest wrong)
+  const active = [0, 1, 2, 3].filter(i => !eliminated.includes(i));
+  const wrongs  = active.filter(i => i !== correctIdx);
+
+  const pcts = [0, 0, 0, 0];
+
+  let wrongTotal = 0;
+  wrongs.forEach(i => {
+    pcts[i] = 5 + Math.floor(Math.random() * 21); // 5-25
+    wrongTotal += pcts[i];
+  });
+
+  // Eliminated options stay at 0%
+  // Correct gets remainder, but must exceed max wrong
+  let correct = 100 - wrongTotal;
+  const maxWrong = wrongs.length > 0 ? Math.max(...wrongs.map(i => pcts[i])) : 0;
+
+  if (correct <= maxWrong) {
+    const need = maxWrong + 1 + Math.floor(Math.random() * 8);
+    const diff = need - correct;
+    correct    = need;
+    // Reduce wrong answers proportionally
+    if (wrongTotal > 0) {
+      let reduced = 0;
+      wrongs.forEach((i, wi) => {
+        const cut = wi === wrongs.length - 1
+          ? diff - reduced
+          : Math.round((pcts[i] / wrongTotal) * diff);
+        pcts[i] = Math.max(1, pcts[i] - cut);
+        reduced += cut;
+      });
+    }
+  }
+
+  pcts[correctIdx] = correct;
+  return pcts;
+}
+
+function renderAudienceChart(pcts, options) {
+  const chart = document.getElementById('audience-chart');
+  chart.innerHTML = '';
+  LABELS.forEach((lbl, i) => {
+    const row = document.createElement('div');
+    row.className = 'audience-row';
+    row.innerHTML = `
+      <span class="audience-letter">${lbl}</span>
+      <div class="audience-bar-wrap">
+        <div class="audience-bar" style="width:${pcts[i]}%"></div>
+      </div>
+      <span class="audience-pct">${pcts[i]}%</span>
+    `;
+    chart.appendChild(row);
+  });
+}
+
+// ── Shuffle util ───────────────────────────────────────────────────────────
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ── Edit overlay ───────────────────────────────────────────────────────────
+document.getElementById('btn-edit').addEventListener('click', openEditor);
+document.getElementById('btn-close-edit').addEventListener('click', closeEditor);
+
+document.getElementById('btn-save-edits').addEventListener('click', () => {
+  const newQs = [];
+  document.querySelectorAll('.edit-q-block').forEach((block, qi) => {
+    const qText   = block.querySelector('.edit-q-text').value.trim();
+    const opts    = Array.from(block.querySelectorAll('.edit-opt-input')).map(el => el.value.trim());
+    const correct = parseInt(block.querySelector('.edit-correct-select').value, 10);
+    newQs.push({ q: qText, options: opts, correct });
+  });
+  questions = newQs;
+  saveQuestions();
+  closeEditor();
+});
+
+document.getElementById('btn-reset-qs').addEventListener('click', () => {
+  if (confirm('Reset all questions to the original defaults? Your edits will be lost.')) {
+    questions = deepCopy(DEFAULT_QUESTIONS);
+    saveQuestions();
+    closeEditor();
+  }
+});
+
+function openEditor() {
+  renderEditor();
+  document.getElementById('edit-overlay').classList.add('visible');
+}
+
+function closeEditor() {
+  document.getElementById('edit-overlay').classList.remove('visible');
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderEditor() {
+  const form = document.getElementById('edit-form');
+  form.innerHTML = questions.map((q, qi) => {
+    const p = PRIZES[qi];
+    const cpBadge = p.checkpoint
+      ? '<span class="edit-checkpoint-badge">★ Checkpoint</span>' : '';
+    const correctOptions = LABELS.map((lbl, i) =>
+      `<option value="${i}" ${q.correct === i ? 'selected' : ''}>${lbl}</option>`
+    ).join('');
+    const optInputs = q.options.map((opt, oi) => `
+      <div class="edit-option-row">
+        <span class="edit-option-letter">${LABELS[oi]}</span>
+        <input class="edit-input edit-opt-input" type="text" value="${esc(opt)}">
+      </div>
+    `).join('');
+    return `
+      <div class="edit-q-block">
+        <div class="edit-q-header">
+          <span class="edit-q-num">Question ${qi + 1}</span>
+          <span class="edit-q-val">${fmt(p.val)}</span>
+          ${cpBadge}
+        </div>
+        <div class="edit-field-label">Question</div>
+        <textarea class="edit-textarea edit-q-text">${esc(q.q)}</textarea>
+        <div class="edit-field-label">Answer Options</div>
+        <div class="edit-options-grid">${optInputs}</div>
+        <div class="edit-correct-row">
+          <label for="correct-${qi}">Correct answer:</label>
+          <select id="correct-${qi}" class="edit-correct-select">${correctOptions}</select>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+initStartScreen();
+</script>
+</body>
+</html>
