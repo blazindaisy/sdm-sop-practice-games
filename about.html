@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About This Project — SDM &amp; SOP Practice Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f7f4ef;
+  --bg-card:  #f0ebe3;
+  --text:     #2d3142;
+  --text-sec: #5c5649;
+  --accent:   #8c4a2f;
+  --border:   #e0dbd3;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.home-link {
+  color: var(--text-sec);
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.home-link:hover { color: var(--accent); }
+
+.page-header h1 {
+  font-family: "Lora", Georgia, serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: var(--accent);
+  flex: 1;
+  text-align: center;
+}
+
+main {
+  flex: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  width: 100%;
+}
+
+.placeholder-card {
+  background: var(--bg-card);
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+}
+
+.placeholder-card h2 {
+  font-family: "Lora", Georgia, serif;
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.placeholder-card p {
+  color: var(--text-sec);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--text-sec);
+  border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="index.html" class="home-link">← Home</a>
+  <h1>About This Project</h1>
+  <span style="width:60px"></span>
+</header>
+
+<main>
+  <div class="placeholder-card">
+    <h2>Coming Soon</h2>
+    <p>Background on this project, its purpose, and the work behind it will be shared here.</p>
+  </div>
+</main>
+
+<footer>
+  Developed by Whitney Polk &nbsp;&middot;&nbsp; The Structured Decision Making&#8482; (SDM) Model is property of Evident Change
+</footer>
+
+</body>
+</html>
