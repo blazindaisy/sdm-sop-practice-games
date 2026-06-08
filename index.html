@@ -3,129 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SDM & SOP Practice Games</title>
+<title>SDM &amp; SOP Practice Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #012A3A;
-  min-height: 100vh;
-  color: #fff;
+:root {
+  --bg:         #f7f4ef;
+  --bg-card:    #f0ebe3;
+  --bg-card2:   #f0e8e0;
+  --text:       #2d3142;
+  --text-sec:   #5c5649;
+  --text-muted: #7a7163;
+  --accent:     #8c4a2f;
+  --border:     #e0dbd3;
 }
 
+body {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ──────────────────────────────────── */
 header {
   text-align: center;
-  padding: 3.5rem 1.5rem 2.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 4rem 1.5rem 3rem;
+  border-bottom: 1px solid var(--border);
 }
 
 header h1 {
-  color: #F4A600;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 0.6rem;
+  font-family: "Lora", Georgia, serif;
+  font-weight: 400;
+  font-size: 2.1rem;
+  color: var(--accent);
+  margin-bottom: 0.65rem;
+  line-height: 1.25;
 }
 
 header p {
-  color: rgba(255,255,255,0.5);
-  font-size: 15px;
-  max-width: 480px;
+  font-size: 1rem;
+  color: var(--text-sec);
+  max-width: 440px;
   margin: 0 auto;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
+/* ── Main ────────────────────────────────────── */
 main {
-  max-width: 900px;
+  flex: 1;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 2.5rem 1.5rem;
+  padding: 2.75rem 1.5rem 4rem;
+  width: 100%;
 }
 
+/* #7a7163 is 4.38:1 on #f7f4ef — fails AA for small text.
+   Used here only at 11px uppercase bold where large-text 3:1 rule applies
+   (bold text ≥14px qualifies; 11px does not — so using #5c5649 instead). */
 .section-label {
-  color: rgba(255,255,255,0.35);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 1.25rem;
+  letter-spacing: 0.12em;
+  color: var(--text-sec);
+  margin-bottom: 1.5rem;
 }
 
+/* ── Cards grid ──────────────────────────────── */
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.25rem;
 }
 
+/* Live game cards */
 .game-card {
-  background: #065A82;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.75rem 1.5rem;
   text-decoration: none;
-  color: #fff;
+  color: var(--text);
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  transition: background 0.15s, transform 0.15s;
-  border: 1px solid transparent;
+  gap: 0.55rem;
+  transition: box-shadow 0.18s, transform 0.18s, border-color 0.18s;
 }
 
 .game-card:hover {
-  background: #023E5C;
+  box-shadow: 0 4px 18px rgba(44,49,66,0.10);
   transform: translateY(-2px);
-  border-color: rgba(244,166,0,0.3);
+  border-color: #c9b9ad;
 }
 
+.game-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Coming soon cards */
 .game-card.coming-soon {
-  background: rgba(6,90,130,0.2);
-  border: 1px dashed rgba(255,255,255,0.12);
+  background: transparent;
+  border: 1.5px dashed var(--border);
   cursor: default;
   pointer-events: none;
 }
 
-.game-icon {
-  font-size: 2rem;
-  margin-bottom: 0.25rem;
-}
-
 .game-card h2 {
+  font-family: "Lora", Georgia, serif;
+  font-weight: 400;
   font-size: 1.1rem;
-  font-weight: 600;
-  color: #F4A600;
+  color: var(--text);
+  line-height: 1.3;
 }
 
 .game-card.coming-soon h2 {
-  color: rgba(255,255,255,0.3);
+  color: var(--text-sec);
 }
 
 .game-card p {
-  font-size: 13px;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.5;
+  font-size: 0.875rem;
+  color: var(--text-sec);
+  line-height: 1.6;
   flex: 1;
 }
 
 .game-card.coming-soon p {
-  color: rgba(255,255,255,0.25);
+  color: var(--text-sec);
+  opacity: 0.65;
 }
 
 .play-label {
   display: inline-block;
-  margin-top: 0.5rem;
-  font-size: 13px;
-  font-weight: 600;
-  color: #F4A600;
-  letter-spacing: 0.04em;
+  margin-top: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.03em;
 }
 
+/* ── Footer ──────────────────────────────────── */
 footer {
   text-align: center;
-  padding: 2rem 1.5rem;
-  color: rgba(255,255,255,0.2);
-  font-size: 12px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  margin-top: 3rem;
+  padding: 1.75rem 1.5rem;
+  font-size: 0.75rem;
+  /* #5c5649 at 6.64:1 on #f7f4ef — passes AA */
+  color: var(--text-sec);
+  border-top: 1px solid var(--border);
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 520px) {
+  header { padding: 2.75rem 1.25rem 2.25rem; }
+  header h1 { font-size: 1.65rem; }
+  main { padding: 2rem 1.25rem 3rem; }
+  .games-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -141,21 +180,18 @@ footer {
   <div class="games-grid">
 
     <a href="games/jeopardy/index.html" class="game-card">
-      <div class="game-icon">🎯</div>
       <h2>SOP Jeopardy</h2>
       <p>Test your knowledge of Safety Organized Practice — harm &amp; danger statements, networks, children's voice, and field application.</p>
       <span class="play-label">Play →</span>
     </a>
 
     <a href="games/millionaire/index.html" class="game-card">
-      <div class="game-icon">💰</div>
       <h2>Who Wants to be Safety Organized?</h2>
       <p>A Millionaire-style game — answer 15 questions correctly to climb the prize ladder. Use your lifelines wisely.</p>
       <span class="play-label">Play →</span>
     </a>
 
-    <div class="game-card coming-soon">
-      <div class="game-icon">🔜</div>
+    <div class="game-card coming-soon" aria-label="More games coming soon">
       <h2>More Games Coming Soon</h2>
       <p>Additional practice games for SDM tools, SOP principles, and field skills.</p>
     </div>
@@ -164,7 +200,7 @@ footer {
 </main>
 
 <footer>
-  Developed by Whitney Polk &nbsp;·&nbsp; The Structured Decision Making&#8482; (SDM) Model is property of Evident Change
+  Developed by Whitney Polk &nbsp;&middot;&nbsp; The Structured Decision Making&#8482; (SDM) Model is property of Evident Change
 </footer>
 
 </body>
