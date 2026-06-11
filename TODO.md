@@ -3,7 +3,7 @@
 ## Platform
 - [ ] Add README.md for GitHub (user-facing instructions for opening and using the games)
 
-## SOP Jeopardy
+## SOP Showdown
 - [ ] Add a Daily Double feature (optional, future)
 - [ ] Add a Final Jeopardy round (optional, future)
 

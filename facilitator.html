@@ -6,7 +6,7 @@
 <title>Facilitator Information — SDM &amp; SOP Practice Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,7 +20,7 @@
 }
 
 body {
-  font-family: "Plus Jakarta Sans", -apple-system, sans-serif;
+  font-family: "Open Sans", -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -40,25 +40,30 @@ body {
   color: var(--text-sec);
   text-decoration: none;
   font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
 }
 .home-link:hover { color: var(--accent); }
 
 .page-header h1 {
-  font-family: "Lora", Georgia, serif;
-  font-weight: 400;
-  font-size: 1.1rem;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
   color: var(--accent);
   flex: 1;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 main {
   flex: 1;
   max-width: 720px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 4rem 2rem 3rem;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .placeholder-card {
@@ -70,25 +75,47 @@ main {
 }
 
 .placeholder-card h2 {
-  font-family: "Lora", Georgia, serif;
-  font-weight: 400;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
   font-size: 1.4rem;
   color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   margin-bottom: 1rem;
 }
 
 .placeholder-card p {
-  color: var(--text-sec);
   font-size: 0.9375rem;
+  color: var(--text-sec);
   line-height: 1.7;
+}
+
+.page-illustration-wrap {
+  margin-top: auto;
+  padding-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.page-illustration {
+  height: 180px;
+  width: auto;
+  display: block;
+  opacity: 0.88;
 }
 
 footer {
   text-align: center;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   font-size: 0.75rem;
   color: var(--text-sec);
   border-top: 1px solid var(--border);
+}
+
+@media (max-width: 520px) {
+  .page-header { padding: 0.875rem 1.25rem; }
+  main { padding: 2.5rem 1.25rem 2rem; }
+  .page-illustration { height: 130px; }
 }
 </style>
 </head>
@@ -105,10 +132,14 @@ footer {
     <h2>Coming Soon</h2>
     <p>Facilitator guidance, tips for running games with teams, and setup instructions will be added here. Check back soon.</p>
   </div>
+
+  <div class="page-illustration-wrap">
+    <img src="images/hero-illustration.png" alt="" class="page-illustration" aria-hidden="true">
+  </div>
 </main>
 
 <footer>
-  Developed by Whitney Polk &nbsp;&middot;&nbsp; The Structured Decision Making&#8482; (SDM) Model is property of Evident Change
+  A Project by Whitney Polk &nbsp;&middot;&nbsp; The Structured Decision Making&#8482; (SDM) Model is property of Evident Change
 </footer>
 
 </body>
